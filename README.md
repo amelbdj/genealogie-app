@@ -29,6 +29,8 @@ Le `docker-compose.yml` de la **branch main** contient uniquement les services n
 # Se placer dans le dossier contenant docker-compose.yml (branch main)
 docker compose pull       # récupère les images depuis Docker Hub
 docker compose up -d      # lance les conteneurs en arrière-plan
+docker exec -it genealogie_app bash # Pour exécuter des scripts PHP à l’intérieur du conteneur
+php scripts/import.php # import de data
 docker compose logs -f    # pour suivre les logs
 ```
 
@@ -61,6 +63,9 @@ docker run -d \
   -p 8080:80 \
   --link genealogie_mongo:mongo \
   amelbdj/genealogie-app:v1
+
+docker exec -it genealogie_app bash # Pour exécuter des scripts PHP à l’intérieur du conteneur
+php scripts/import.php # import de data
 ```
 
 * Accès : `http://localhost:8080`
@@ -72,6 +77,4 @@ docker run -d \
 
 * **main** : contient uniquement le `docker-compose.yml` minimal pour test rapide
 * **dev** : contient l’ensemble du projet (code PHP, scripts, Dockerfile, composer.json, etc.)
-
-
 
