@@ -73,23 +73,5 @@ docker run -d \
 * **main** : contient uniquement le `docker-compose.yml` minimal pour test rapide
 * **dev** : contient l’ensemble du projet (code PHP, scripts, Dockerfile, composer.json, etc.)
 
----
 
-## Notes techniques
 
-* Le fichier `config/mongo.php` utilise :
-
-```php
-require __DIR__ . '/../vendor/autoload.php';
-```
-
-pour inclure correctement Composer depuis l’image Docker.
-
-* Les dépendances PHP sont déjà installées dans l’image (`composer install` a été exécuté lors du build).
-* Apache peut afficher un warning sur le `ServerName` → cela n’impacte pas le fonctionnement.
-
----
-
-Si tu veux, je peux te **faire la version finale prête à copier-coller dans GitHub**, formatée avec un joli style Markdown et avec toutes les instructions exactement prêtes pour ton prof.
-
-Veux‑tu que je fasse ça ?
