@@ -1,120 +1,95 @@
-Parfait ! Voici une version **améliorée et prête à montrer à ton prof**, avec toutes les commandes Docker détaillées pour lancer, tester et gérer ton application :
+# Projet Genealogie App
+
+## Description
+
+Cette application permet de gérer et visualiser des arbres généalogiques.
+
+Elle utilise :
+
+* PHP 8.2 + Apache
+* MongoDB 6
+* Composer pour gérer les dépendances PHP
+
+Toutes les dépendances et le code sont déjà inclus dans l’image Docker `amelbdj/genealogie-app:v1`.
 
 ---
 
-````markdown
-# Genealogie App
+## Scénarios de test
 
-Une application PHP pour gérer et visualiser des arbres généalogiques, connectée à une base de données MongoDB, entièrement déployable via Docker.
+### **1. Test rapide avec Docker Compose (recommandé pour le prof)**
+
+Le `docker-compose.yml` de la **branch main** contient uniquement les services nécessaires pour lancer l’application :
+
+* **app** : l’application PHP
+* **mongo** : base de données MongoDB
+
+#### Commandes à exécuter
+
+```bash
+# Se placer dans le dossier contenant docker-compose.yml (branch main)
+docker compose pull       # récupère les images depuis Docker Hub
+docker compose up -d      # lance les conteneurs en arrière-plan
+docker compose logs -f    # pour suivre les logs
+```
+
+#### Accès à l’application
+
+* Ouvrir un navigateur à : `http://localhost:8080`
+* MongoDB est exposé sur : `localhost:27017` (optionnel pour inspection)
 
 ---
 
-## Prérequis
+### **2. Test sans Docker Compose**
 
-- [Docker](https://www.docker.com/get-started)
-- [Docker Compose](https://docs.docker.com/compose/install/)
-- Compte Docker Hub (optionnel si vous voulez utiliser l’image publique)
-
----
-
-## Installation du projet
-
-1. **Cloner le projet**
+Si le prof souhaite tester uniquement l’image Docker sans docker-compose :
 
 ```bash
-git clone <ton-repo-git> genealogie-app
-cd genealogie-app
-````
-
-2. **Lancer les conteneurs avec Docker Compose**
-
-```bash
-docker compose up --build
-```
-
-* Le conteneur `app` contient PHP 8.2 + Apache + MongoDB extension.
-* Le conteneur `mongo` contient MongoDB 6.
-* Le projet sera accessible sur [http://localhost:8080](http://localhost:8080)
-
-3. **Vérifier les conteneurs**
-
-```bash
-docker compose ps
-```
-
----
-
-## Commandes utiles
-
-### Se connecter au conteneur PHP
-
-```bash
-docker compose exec app bash
-```
-
-### Installer les dépendances PHP via Composer
-
-*(à l’intérieur du conteneur `app`)*
-
-```bash
-composer install
-```
-
-### Lancer un script PHP
-
-*(à l’intérieur du conteneur `app`)*
-
-```bash
-php scripts/import.php
-```
-
-### Arrêter et supprimer les conteneurs
-
-```bash
-docker compose down -v
-```
-
-* `-v` supprime aussi le volume MongoDB pour repartir à zéro.
-
----
-
-## Déploiement depuis Docker Hub
-
-L’image est disponible sous :
-
-```
-amelbdj/genealogie-app:v1
-```
-
-Pour lancer l’application directement depuis Docker Hub sans reconstruire :
-
-```bash
+# Récupérer les images depuis Docker Hub
+docker pull mongo:6
 docker pull amelbdj/genealogie-app:v1
-docker run -p 8080:80 amelbdj/genealogie-app:v1
+
+# Lancer MongoDB
+docker run -d \
+  --name genealogie_mongo \
+  -p 27017:27017 \
+  -v mongo-data:/data/db \
+  mongo:6
+
+# Lancer l'application et lier Mongo
+docker run -d \
+  --name genealogie_app \
+  -p 8080:80 \
+  --link genealogie_mongo:mongo \
+  amelbdj/genealogie-app:v1
 ```
+
+* Accès : `http://localhost:8080`
+* Tout fonctionne sans copier le code local.
 
 ---
 
-## Structure du projet
+## Branches du projet
 
-```
-├── config/           # Configurations PHP, notamment mongo.php
-├── scripts/          # Scripts PHP d'import ou de traitement
-├── src/              # Code source principal de l’application
-├── Dockerfile        # Construction de l’image PHP + Apache
-├── docker-compose.yml# Définition des conteneurs et volumes
-├── vendor/           # Dépendances installées via Composer
-└── README.md         # Ce fichier
-```
+* **main** : contient uniquement le `docker-compose.yml` minimal pour test rapide
+* **dev** : contient l’ensemble du projet (code PHP, scripts, Dockerfile, composer.json, etc.)
 
 ---
 
 ## Notes techniques
 
-* Le projet utilise **Composer** pour la gestion des dépendances.
-* L’extension **MongoDB** pour PHP est déjà installée dans le conteneur.
-* Les données MongoDB sont persistées grâce au volume Docker `mongo-data`.
-* Les chemins dans PHP utilisent `__DIR__` pour inclure correctement les fichiers dans Docker.
+* Le fichier `config/mongo.php` utilise :
 
-
+```php
+require __DIR__ . '/../vendor/autoload.php';
 ```
+
+pour inclure correctement Composer depuis l’image Docker.
+
+* Les dépendances PHP sont déjà installées dans l’image (`composer install` a été exécuté lors du build).
+* Apache peut afficher un warning sur le `ServerName` → cela n’impacte pas le fonctionnement.
+
+---
+
+Si tu veux, je peux te **faire la version finale prête à copier-coller dans GitHub**, formatée avec un joli style Markdown et avec toutes les instructions exactement prêtes pour ton prof.
+
+Veux‑tu que je fasse ça ?
