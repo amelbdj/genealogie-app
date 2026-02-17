@@ -41,7 +41,8 @@ cd genealogie-app
 ### 2. Démarrer les conteneurs
 
 ```bash
-docker compose up -d
+docker-compose up -d
+
 ```
 
 ### 3. Accéder à l’application
@@ -189,3 +190,4 @@ Après lancement et import :
 * Application accessible sur localhost:8080
 * Données MongoDB présentes
 * Navigation dans les arbres généalogiques fonctionnelle
+
