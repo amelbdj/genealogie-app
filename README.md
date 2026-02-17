@@ -1,80 +1,191 @@
-# Projet Genealogie App
+# Documentation – Application Généalogie (Docker)
 
-## Description
+## Architecture Docker de l’application
 
-Cette application permet de gérer et visualiser des arbres généalogiques.
+L’application est composée de deux conteneurs Docker :
 
-Elle utilise :
+* **genealogie_app**
+  Application PHP + Apache contenant le code de l’application
+  Image : `amelbdj/genealogie-app:v1`
 
-* PHP 8.2 + Apache
-* MongoDB 6
-* Composer pour gérer les dépendances PHP
+* **genealogie_mongo**
+  Base de données MongoDB
+  Image officielle : `mongo:6`
 
-Toutes les dépendances et le code sont déjà inclus dans l’image Docker `amelbdj/genealogie-app:v1`.
+Ces deux conteneurs communiquent via un réseau Docker commun (bridge par défaut).
+L’application accède à MongoDB via le nom de service `mongo`.
 
----
+### Schéma simplifié
 
-## Scénarios de test
-
-### **1. Test rapide avec Docker Compose (recommandé pour le prof)**
-
-Le `docker-compose.yml` de la **branch main** contient uniquement les services nécessaires pour lancer l’application :
-
-* **app** : l’application PHP
-* **mongo** : base de données MongoDB
-
-#### Commandes à exécuter
-
-```bash
-# Se placer dans le dossier contenant docker-compose.yml (branch main)
-docker compose pull       # récupère les images depuis Docker Hub
-docker compose up -d      # lance les conteneurs en arrière-plan
-docker exec -it genealogie_app bash # Pour exécuter des scripts PHP à l’intérieur du conteneur
-php scripts/import.php # import de data
-docker compose logs -f    # pour suivre les logs
+```
+Navigateur (localhost:8080)
+        ↓
+genealogie_app (PHP/Apache)
+        ↓ réseau Docker
+genealogie_mongo (MongoDB)
 ```
 
-#### Accès à l’application
+---
 
-* Ouvrir un navigateur à : `http://localhost:8080`
-* MongoDB est exposé sur : `localhost:27017` (optionnel pour inspection)
+# Instructions pour construire et démarrer l’application
+
+## Méthode 1 — Avec Docker Compose (recommandé)
+
+### 1. Cloner le projet
+
+```bash
+git clone https://github.com/amelbdj/genealogie-app.git
+cd genealogie-app
+```
+
+### 2. Démarrer les conteneurs
+
+```bash
+docker compose up -d
+```
+
+### 3. Accéder à l’application
+
+[http://localhost:8080](http://localhost:8080)
 
 ---
 
-### **2. Test sans Docker Compose**
+# Méthode 2 — Depuis Docker Hub uniquement
 
-Si le prof souhaite tester uniquement l’image Docker sans docker-compose :
+Cette méthode fonctionne sans cloner le projet.
+
+### 1. Lancer MongoDB
 
 ```bash
-# Récupérer les images depuis Docker Hub
-docker pull mongo:6
-docker pull amelbdj/genealogie-app:v1
-
-# Lancer MongoDB
 docker run -d \
   --name genealogie_mongo \
   -p 27017:27017 \
-  -v mongo-data:/data/db \
   mongo:6
-
-# Lancer l'application et lier Mongo
-docker run -d \
-  --name genealogie_app \
-  -p 8080:80 \
-  --link genealogie_mongo:mongo \
-  amelbdj/genealogie-app:v1
-
-docker exec -it genealogie_app bash # Pour exécuter des scripts PHP à l’intérieur du conteneur
-php scripts/import.php # import de data
 ```
 
-* Accès : `http://localhost:8080`
-* Tout fonctionne sans copier le code local.
+### 2. Lancer l’application
+
+```bash
+docker run -d \
+  --name genealogie_app \
+  --link genealogie_mongo:mongo \
+  -p 8080:80 \
+  amelbdj/genealogie-app:v1
+```
+
+Application disponible : [http://localhost:8080](http://localhost:8080)
 
 ---
 
-## Branches du projet
+# Import des données (obligatoire)
 
-* **main** : contient uniquement le `docker-compose.yml` minimal pour test rapide
-* **dev** : contient l’ensemble du projet (code PHP, scripts, Dockerfile, composer.json, etc.)
+Par défaut la base MongoDB est vide.
+Il faut importer les données de test.
 
+### 1. Ouvrir un terminal dans le conteneur app
+
+```bash
+docker exec -it genealogie_app bash
+```
+
+### 2. Lancer le script d’import
+
+```bash
+php scripts/import.php
+```
+
+La base MongoDB est maintenant peuplée.
+L’application affiche les arbres généalogiques.
+
+---
+
+# Test de la communication entre conteneurs
+
+Vérifier que l’application voit MongoDB :
+
+```bash
+docker exec -it genealogie_app bash
+ping mongo
+```
+
+Si la communication fonctionne, le conteneur MongoDB répond.
+
+---
+
+# Test de la persistance des données MongoDB
+
+1. Importer les données
+2. Redémarrer MongoDB :
+
+```bash
+docker restart genealogie_mongo
+```
+
+3. Recharger l’application
+
+Les données sont toujours présentes : la persistance fonctionne.
+
+---
+
+# Volumes et stockage
+
+MongoDB utilise un volume Docker :
+
+```
+mongo-data:/data/db
+```
+
+Ce volume permet de conserver les données même si le conteneur est supprimé.
+
+---
+
+# Réseau Docker
+
+Les conteneurs utilisent un réseau bridge :
+
+* genealogie_app
+* genealogie_mongo
+
+Le nom `mongo` est utilisé comme hostname dans l’application :
+
+```php
+mongodb://mongo:27017
+```
+
+---
+
+# Commandes utiles
+
+Voir les conteneurs :
+
+```bash
+docker ps
+```
+
+Ouvrir un shell dans l’app :
+
+```bash
+docker exec -it genealogie_app bash
+```
+
+Voir les logs :
+
+```bash
+docker logs genealogie_app
+```
+
+Arrêter :
+
+```bash
+docker compose down
+```
+
+---
+
+# Résultat attendu
+
+Après lancement et import :
+
+* Application accessible sur localhost:8080
+* Données MongoDB présentes
+* Navigation dans les arbres généalogiques fonctionnelle
