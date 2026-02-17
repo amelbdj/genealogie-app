@@ -133,7 +133,7 @@ Les données sont toujours présentes : la persistance fonctionne.
 MongoDB utilise un volume Docker :
 
 ```
-mongo-data:/data/db
+docker volume ls
 ```
 
 Ce volume permet de conserver les données même si le conteneur est supprimé.
@@ -190,5 +190,6 @@ Après lancement et import :
 * Application accessible sur localhost:8080
 * Données MongoDB présentes
 * Navigation dans les arbres généalogiques fonctionnelle
+
 
 
