@@ -106,7 +106,7 @@ Vérifier que l’application voit MongoDB :
 
 ```bash
 docker exec -it genealogie_app bash
-ping mongo
+php -r "echo gethostbyname('mongo');"
 ```
 
 Si la communication fonctionne, le conteneur MongoDB répond.
@@ -190,4 +190,5 @@ Après lancement et import :
 * Application accessible sur localhost:8080
 * Données MongoDB présentes
 * Navigation dans les arbres généalogiques fonctionnelle
+
 
