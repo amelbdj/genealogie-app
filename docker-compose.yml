@@ -10,10 +10,12 @@ services:
       - mongo
     networks:
       - app-network
+    entrypoint: ["/bin/sh", "/var/www/html/import.sh"]
+    secrets:
+      - mongoMDP   # <-- monte le secret dans le conteneur app
 
   mongo:
     image: mongo:6
-    container_name: genealogie_mongo
     restart: always
     ports:
       - "27017:27017"
@@ -21,6 +23,13 @@ services:
       - mongo-data:/data/db
     networks:
       - app-network
+    env_file:
+      - .env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/mongoMDP
+    secrets:
+      - mongoMDP   # <-- monte le secret dans le conteneur mongo
 
 volumes:
   mongo-data:
@@ -28,3 +37,7 @@ volumes:
 networks:
   app-network:
     driver: bridge
+
+secrets:
+  mongoMDP:
+    file: ./secrets/mongoMDP.secret
