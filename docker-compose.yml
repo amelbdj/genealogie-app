@@ -1,15 +1,18 @@
 services:
   app:
-    build: .
+    image: amelbdj/genealogie-app:v2
     container_name: genealogie_app
     ports:
       - "8080:80"
-    volumes:
-      - .:/var/www/html
     depends_on:
       - mongo
     networks:
       - app-network
+    volumes:
+      - ./import.sh:/var/www/html/import.sh
+    entrypoint: ["/bin/sh", "/var/www/html/import.sh"]
+    secrets:
+      - mongoMDP
 
   mongo:
     image: mongo:6
@@ -21,6 +24,11 @@ services:
       - mongo-data:/data/db
     networks:
       - app-network
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/mongoMDP
+    secrets:
+      - mongoMDP
 
 volumes:
   mongo-data:
@@ -28,3 +36,7 @@ volumes:
 networks:
   app-network:
     driver: bridge
+
+secrets:
+  mongoMDP:
+    file: ./secrets/mongoMDP.secret
