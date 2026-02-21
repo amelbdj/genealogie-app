@@ -5,36 +5,65 @@ L’application est entièrement conteneurisée avec **Docker** et orchestrée v
 
 ---
 
-##  1. Instructions de démarrage
+C'est une excellente idée. Ajouter ces étapes rend le README totalement autonome pour un nouvel utilisateur.
+
+Voici la section **1. Instructions de démarrage** mise à jour avec les commandes Git et Docker Pull :
+
+---
+
+## 🚀 1. Instructions de démarrage
 
 ### Prérequis
 
-* **Docker** installé
-* **Docker Compose** installé
+* **Git** installé
+* **Docker** & **Docker Compose** installés
 
-### Lancement rapide (via Docker Hub)
+### Procédure d'installation
 
-Vous n'avez pas besoin du code source pour lancer l'application. Suivez ces étapes :
-
-1. **Créer le dossier des secrets :**
+1. **Récupérer le projet :**
 ```bash
-mkdir -p secrets
+git clone https://github.com/amelbdj/genealogie-app.git
+cd genealogie-app
 
 ```
 
 
-2. **Créer le fichier du mot de passe MongoDB :**
+2. **Récupérer les images depuis Docker Hub :**
 ```bash
+docker pull amelbdj/genealogie-app:v2
+docker pull mongo:6
+
+```
+
+
+3. **Configurer la sécurité (Secrets) :**
+L'application utilise des Docker Secrets pour ne pas exposer les mots de passe.
+```bash
+mkdir -p secrets
 echo "motdepassemongo" > secrets/mongoMDP.secret
 
 ```
 
 
-3. **Lancer l’application :**
+4. **Lancer l'infrastructure :**
 ```bash
 docker compose up -d
 
 ```
+
+
+5. **Accéder à l'application :**
+Ouvrez votre navigateur sur [http://localhost:8080](https://www.google.com/search?q=http://localhost:8080)
+
+---
+
+### Pourquoi ces étapes ?
+
+* **`git clone`** : Télécharge le fichier `docker-compose.yml` et les scripts de configuration nécessaires.
+* **`docker pull`** : Assure que vous avez les dernières versions des images avant de lancer les conteneurs.
+* **`secrets/`** : Cette méthode évite d'écrire le mot de passe en clair dans le fichier YAML (bonne pratique de sécurité).
+
+**Souhaitez-vous que je complète également la section "Dépôt et images" avec le lien Git final ?**
 
 
 4. **Accéder à l’interface :**
