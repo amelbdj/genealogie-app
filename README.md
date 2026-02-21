@@ -5,7 +5,7 @@ L’application est entièrement conteneurisée avec **Docker** et orchestrée v
 
 ---
 
-## 🚀 1. Instructions de démarrage
+##  1. Instructions de démarrage
 
 ### Prérequis
 
