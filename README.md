@@ -30,7 +30,7 @@ cd genealogie-app
 
 2. **Récupérer les images depuis Docker Hub :**
 ```bash
-docker pull amelbdj/genealogie-app:v2
+docker pull fatymut/genealogie-app:v3
 docker pull mongo:6
 
 ```
