@@ -5,13 +5,7 @@ L’application est entièrement conteneurisée avec **Docker** et orchestrée v
 
 ---
 
-C'est une excellente idée. Ajouter ces étapes rend le README totalement autonome pour un nouvel utilisateur.
-
-Voici la section **1. Instructions de démarrage** mise à jour avec les commandes Git et Docker Pull :
-
----
-
-## 🚀 1. Instructions de démarrage
+##  1. Instructions de démarrage
 
 ### Prérequis
 
@@ -73,7 +67,7 @@ Rendez-vous sur [http://localhost:8080](https://www.google.com/search?q=http://l
 
 ---
 
-## 🏗️ 2. Architecture Docker
+##  2. Architecture Docker
 
 ### Services
 
