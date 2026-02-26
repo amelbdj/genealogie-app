@@ -1,6 +1,6 @@
 services:
   app:
-    image: amelbdj/genealogie-app:v2
+    image: fatymut/genealogie-app:v3
     container_name: genealogie_app
     ports:
       - "8080:80"
