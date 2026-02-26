@@ -63,7 +63,6 @@ Ouvrez votre navigateur sur [http://localhost:8080](https://www.google.com/searc
 * **`docker pull`** : Assure que vous avez les dernières versions des images avant de lancer les conteneurs.
 * **`secrets/`** : Cette méthode évite d'écrire le mot de passe en clair dans le fichier YAML (bonne pratique de sécurité).
 
-**Souhaitez-vous que je complète également la section "Dépôt et images" avec le lien Git final ?**
 
 
 4. **Accéder à l’interface :**
