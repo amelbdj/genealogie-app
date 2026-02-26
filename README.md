@@ -138,5 +138,5 @@ Le flux de démarrage est géré par le script `import.sh` (Entrypoint) :
 
 ##  6. Dépôt et Images
 
-* **Docker Hub :** [amelbdj/genealogie-app](https://hub.docker.com/r/amelbdj/genealogie-app)
+* **Docker Hub :** [fatymut/genealogie-app](https://hub.docker.com/r/fatymut/genealogie-app)
 * **Repository Git :** `[[repo git branch true](https://github.com/amelbdj/genealogie-app/tree/true)]`
